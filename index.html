@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Proposal Day</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Manrope:wght@500;700&family=Noto+Sans+Devanagari:wght@500;700&family=Noto+Sans+JP:wght@500;700&display=swap"
+    rel="stylesheet"
+  />
+  <style>
+    :root {
+      --black: #080808;
+      --red: #c5001a;
+      --soft-red: #ff3355;
+      --ivory: #fff6f6;
+      --bg-size: cover;
+      --bg-position: center center;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      font-family: "Manrope", "Segoe UI", sans-serif;
+      color: var(--ivory);
+      background: linear-gradient(155deg, #ffd6df 0%, #ff98ad 45%, #ff5f82 100%);
+      overflow: hidden;
+      position: relative;
+    }
+
+    body::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: url("images/background.jpg") var(--bg-position) / var(--bg-size) no-repeat;
+      opacity: 0.3;
+      filter: saturate(1.2) contrast(1.1);
+      z-index: 0;
+    }
+
+    @media (min-aspect-ratio: 4/3) {
+      :root {
+        --bg-size: contain;
+      }
+    }
+
+    @media (max-width: 640px) {
+      :root {
+        --bg-position: center top;
+      }
+    }
+
+    body::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 80% 20%, rgba(255, 110, 150, 0.3), transparent 42%),
+        radial-gradient(circle at 20% 80%, rgba(255, 85, 120, 0.24), transparent 44%);
+      z-index: 0;
+      animation: pulse 5s ease-in-out infinite alternate;
+    }
+
+    .card {
+      position: relative;
+      z-index: 1;
+      width: min(92vw, 620px);
+      padding: 2.6rem 1.4rem 2rem;
+      text-align: center;
+      background: rgba(0, 0, 0, 0.62);
+      border: 3px solid var(--black);
+      outline: 3px solid var(--red);
+      outline-offset: -10px;
+      border-radius: 26px;
+      box-shadow:
+        0 12px 40px rgba(0, 0, 0, 0.7),
+        0 0 0 1px rgba(255, 0, 42, 0.35) inset;
+      animation: rise 0.8s ease-out;
+    }
+
+    h1 {
+      margin: 0 0 1.8rem;
+      font-family: "Cinzel", Georgia, serif;
+      font-size: clamp(1.9rem, 4.8vw, 3rem);
+      letter-spacing: 0.04em;
+      text-shadow: 0 2px 12px rgba(255, 0, 60, 0.5);
+    }
+
+    .actions {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 0.9rem;
+      position: relative;
+    }
+
+    button {
+      min-width: 120px;
+      border: 2px solid var(--black);
+      outline: 2px solid var(--red);
+      outline-offset: 1px;
+      background: linear-gradient(180deg, #2d0008, #73000f);
+      color: #fff;
+      border-radius: 999px;
+      padding: 0.72rem 1.2rem;
+      font-size: 1rem;
+      font-weight: 700;
+      font-family: "Manrope", sans-serif;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      background: linear-gradient(180deg, #43000f, #9a0014);
+      box-shadow: 0 6px 18px rgba(255, 0, 55, 0.35);
+    }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      display: none;
+      place-items: center;
+      background: rgba(0, 0, 0, 0.7);
+      z-index: 5;
+      padding: 1rem;
+    }
+
+    .modal.active {
+      display: grid;
+      animation: fadeIn 0.25s ease-out;
+    }
+
+    .modal-box {
+      width: min(94vw, 560px);
+      border-radius: 16px;
+      border: 2px solid var(--black);
+      outline: 2px solid var(--red);
+      background: #130306;
+      color: #ffe7ea;
+      padding: 1.2rem;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    }
+
+    .modal-box h2 {
+      margin: 0 0 0.8rem;
+      font-family: "Cinzel", serif;
+      color: #ff8b9f;
+      font-size: 1.4rem;
+    }
+
+    .modal-box p {
+      margin: 0.35rem 0;
+      line-height: 1.5;
+      font-size: 0.98rem;
+    }
+
+    .close {
+      margin-top: 0.85rem;
+      min-width: auto;
+      padding-inline: 1rem;
+      font-size: 0.92rem;
+    }
+
+    .no-btn {
+      background: linear-gradient(180deg, #111, #3a0000);
+    }
+
+    .no-btn.escaping {
+      position: fixed;
+      z-index: 4;
+      transition: left 0.2s ease, top 0.2s ease, transform 0.12s ease;
+    }
+
+    .lang-hi {
+      font-family: "Noto Sans Devanagari", "Manrope", sans-serif;
+    }
+
+    .lang-ja {
+      font-family: "Noto Sans JP", "Manrope", sans-serif;
+    }
+
+    @keyframes rise {
+      from {
+        opacity: 0;
+        transform: translateY(18px) scale(0.98);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    @keyframes pulse {
+      from {
+        transform: scale(1);
+      }
+      to {
+        transform: scale(1.05);
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <h1>Will you be my valentine?</h1>
+    <div class="actions">
+      <button id="yesBtn" type="button">Yes</button>
+      <button id="otherBtn" type="button">?</button>
+      <button id="noBtn" class="no-btn" type="button">No</button>
+    </div>
+  </main>
+
+  <section id="yesModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="yesTitle">
+    <div class="modal-box">
+      <h2 id="yesTitle">Yay!</h2>
+      <p>Thank you now are trappped with me forever</p>
+      <button class="close" type="button" data-close="yesModal">Close</button>
+    </div>
+  </section>
+
+  <script>
+    const yesBtn = document.getElementById("yesBtn");
+    const otherBtn = document.getElementById("otherBtn");
+    const noBtn = document.getElementById("noBtn");
+    const yesModal = document.getElementById("yesModal");
+    const yesWords = [
+      { text: "हाँ", langClass: "lang-hi" },
+      { text: "はい", langClass: "lang-ja" },
+      { text: "haan hai", langClass: "" },
+      { text: "Oui", langClass: "" },
+      { text: "haan haan haan jaanu", langClass: "" },
+      { text: "Sim", langClass: "" },
+      { text: "Да", langClass: "" },
+      { text: "keh dia na haan", langClass: "" }
+    ];
+    let yesWordIndex = 0;
+    let noIsEscaping = false;
+    let questionResetTimer;
+
+    yesBtn.addEventListener("click", () => {
+      yesModal.classList.add("active");
+    });
+
+    otherBtn.addEventListener("click", () => {
+      const nextWord = yesWords[yesWordIndex];
+      otherBtn.textContent = nextWord.text;
+      otherBtn.classList.remove("lang-hi", "lang-ja");
+      if (nextWord.langClass) {
+        otherBtn.classList.add(nextWord.langClass);
+      }
+      yesWordIndex = (yesWordIndex + 1) % yesWords.length;
+      clearTimeout(questionResetTimer);
+      questionResetTimer = setTimeout(() => {
+        otherBtn.textContent = "?";
+        otherBtn.classList.remove("lang-hi", "lang-ja");
+      }, 2000);
+    });
+
+    document.querySelectorAll("[data-close]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const targetId = btn.getAttribute("data-close");
+        const target = document.getElementById(targetId);
+        target.classList.remove("active");
+      });
+    });
+
+    yesModal.addEventListener("click", (event) => {
+      if (event.target === yesModal) {
+        yesModal.classList.remove("active");
+      }
+    });
+
+    function moveNoButton() {
+      if (!noIsEscaping) {
+        noBtn.classList.add("escaping");
+        noIsEscaping = true;
+      }
+      const margin = 8;
+      const maxX = window.innerWidth - noBtn.offsetWidth - margin;
+      const maxY = window.innerHeight - noBtn.offsetHeight - margin;
+      const nextX = Math.max(margin, Math.floor(Math.random() * maxX));
+      const nextY = Math.max(margin, Math.floor(Math.random() * maxY));
+      noBtn.style.left = `${nextX}px`;
+      noBtn.style.top = `${nextY}px`;
+      noBtn.style.transform = `rotate(${Math.floor(Math.random() * 30) - 15}deg)`;
+    }
+
+    function isPointerNearButton(event) {
+      const rect = noBtn.getBoundingClientRect();
+      const nearZone = 80;
+      return (
+        event.clientX > rect.left - nearZone &&
+        event.clientX < rect.right + nearZone &&
+        event.clientY > rect.top - nearZone &&
+        event.clientY < rect.bottom + nearZone
+      );
+    }
+
+    noBtn.addEventListener("mouseenter", moveNoButton);
+    noBtn.addEventListener("touchstart", (event) => {
+      event.preventDefault();
+      moveNoButton();
+    }, { passive: false });
+    noBtn.addEventListener("click", (event) => {
+      event.preventDefault();
+      moveNoButton();
+    });
+
+    document.addEventListener("mousemove", (event) => {
+      if (noIsEscaping && isPointerNearButton(event)) {
+        moveNoButton();
+      }
+    });
+
+    window.addEventListener("resize", () => {
+      if (noIsEscaping) {
+        moveNoButton();
+      }
+    });
+  </script>
+</body>
+</html>
